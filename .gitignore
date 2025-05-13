@@ -5,3 +5,6 @@
 # Python cache
 __pycache__/
 *.pyc
+
+# ignore large CSV
+data/amazon_ratings_beauty.csv

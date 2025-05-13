@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: recsys
+      POSTGRES_PASSWORD: recsys
+      POSTGRES_DB: recsys
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - recsys_default
+
+  api:
+    build: ./api
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - recsys_default
+
+  # trainer:
+  #   build: ./training
+  #   env_file: .env
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - recsys_default
+
+  stream:
+    build: ./stream
+    env_file: .env
+    volumes:
+      - ./data:/data:ro
+    depends_on:
+      - db
+    networks:
+      - recsys_default
+
+  airflow:
+    build: ./airflow
+    env_file: .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      # so Airflow can import your DAG
+      - ./airflow/dags:/opt/airflow/dags:ro
+      # so Airflow can import the stream & training scripts
+      - ./stream:/opt/recsys/stream:ro
+      - ./training:/opt/recsys/training:ro
+      # data for stream
+      - ./data:/data:ro
+      - ./:/opt/recsys:ro  
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - recsys_default
+
+volumes:
+  pgdata:
+
+networks:
+  recsys_default:
+    driver: bridge

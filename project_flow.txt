@@ -1,0 +1,27 @@
+recsys/
+├── api/                             # Recommendation-serving API
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── main.py                      # FastAPI application
+│
+├── training/                        # Model training container
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── train.py                     # LightFM training script
+│
+├── stream/                          # Stream ingestion simulator
+│   ├── Dockerfile                   # (optional) container for simulate_stream
+│   ├── requirements.txt
+│   └── simulate_stream.py           # CSV-to-Postgres micro-batch loader
+│
+├── airflow/                         # Airflow orchestration
+│   ├── dags/
+│   │   └── retrain_streaming_dag.py # DAG with stream_data & retrain_model
+│   └── Dockerfile                   # Airflow image with DockerProvider
+│
+├── data/                            # Static data assets
+│   └── amazon_ratings_beauty.csv    # Kaggle dataset CSV
+│
+├── docker-compose.yml               # Defines db, api, trainer, stream, airflow
+├── .env                             # Environment variables (DATABASE_URL, CSV_PATH)
+└── README.md                        # Project overview & setup instructions

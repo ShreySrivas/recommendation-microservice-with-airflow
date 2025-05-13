@@ -1,0 +1,5 @@
+lightfm==1.17
+psycopg2-binary==2.9.6
+numpy==1.25.0
+scipy==1.11.1
+SQLAlchemy==2.0.18
